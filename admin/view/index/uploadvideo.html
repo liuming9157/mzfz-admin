@@ -1,0 +1,37 @@
+{extend name='public/base'}
+{block name='content'}
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        视频管理
+        <small>视频上传</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Dashboard</li>
+      </ol>
+    </section>
+<section class='content'>
+  <blockquote class='layui-elem-quote'>请先将视频上传到腾讯视频，然后复制到下方地址栏保存</blockquote>
+<form class="layui-form" action="/admin/index/upload_video">
+  <div class="layui-form-item">
+    <label class="layui-form-label">地址栏</label>
+    <div class="layui-input-block">
+      <input type="text" name="src" required  lay-verify="required" placeholder="请输入视频地址" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <button class='layui-btn'  lay-submit lay-filter='form1'>保存</button>
+ </form>
+ </section>
+<script src="/static/module/layui/layui.js"></script>
+<script type='text/javascript'>
+layui.use('form',function(){
+var form=layui.form;
+  form.on('submit(form1)',function(){
+  layer.msg('保存成功！'{time:3000});
+    //return false;
+  });
+});
+</script>
+ {/block}

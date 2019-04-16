@@ -1,0 +1,58 @@
+{extend name='public/base'}
+{block name='content'}
+<script src="/static/module/layui/layui.js"></script>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        视频管理
+        <small>视频编辑</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Dashboard</li>
+      </ol>
+    </section>
+<section class='content'>
+  <blockquote class='layui-elem-quote'>请先将视频上传到腾讯视频，然后复制到下方地址栏保存</blockquote>
+  <table class='layui-table' id='table1' lay-filter='table1'>
+    <thead>
+      <tr>
+        <th lay-data="{filed:'src',width:400}">地址</th>
+         <th lay-data="{filed:'time',width:100}">上传时间</th>
+         <th lay-data="{filed:'src'}"></th>
+        </tr>
+      </thead>
+    <tbody>
+      {volist name='list' id='vo'}
+    <tr>
+      <td>{$vo.src}</td>
+       <td>{$vo.time}</td>
+       <td><button class='layui-btn laytui-btn-sm layui-btn-danger' onclick='delete_video({$vo.id})'>删除</button></td>
+      </tr>
+      {/volist}
+    </tbody>
+    </table>
+ </section>
+<script type='text/javascript'>
+
+  function delete_video(id){
+       layer.confirm('确定删除？', function(index){
+            $.ajax({
+              url: '/admin/index/delete_video',
+              type: 'get',
+              dataType: 'json',
+              data: {id:id},
+          })
+          .done(function(data){
+              //回调提示
+             layer.open({title:'恭喜',content:'删除成功！'}),
+               location.reload()
+             
+          })
+
+
+       })
+
+    }
+</script>
+ {/block}

@@ -1,0 +1,31 @@
+ <span style='display:flex;flex-direction:row'>
+         {volist name='image' id='vo'}  
+       <div>
+          <img src="/uploads/{$vo.src}" style='height:200px;width:200px;margin:5px'/> 
+          <br/>
+         <center><button  onclick='delete_img({$vo.id})' class='layui-btn layui-btn-danger'>删除</button></center>
+       </div>
+         {/volist}
+  </span>
+  <script type="text/javascript">
+  	 function delete_img(id){
+       layer.confirm('确定删除？', function(index){
+            $.ajax({
+              url: '/admin/image/delete_img',
+              type: 'get',
+              dataType: 'json',
+              data: {id:id},
+          })
+          .done(function(data){
+              //回调提示
+             layer.open({title:'恭喜',content:'删除成功！'}),
+               location.reload()
+             
+          })
+
+
+       })
+
+    }
+
+  </script>

@@ -1,0 +1,6 @@
+index-主页
+system-系统设置
+log-添加日志
+main-检查权限及获取侧边栏
+mall-获取系统日志
+adminuser-用户管理

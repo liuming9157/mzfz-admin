@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="/static/module/layui/css/layui.css" />
+		<style type="text/css">
+			.layui-upload-img{
+				width: 200px;
+				height: 200px;
+			}
+		</style>
+	</head>
+	<body>
+		<form id="form1" class="layui-form" action='/admin/product/add'>
+			<div class="layui-form-item">
+				<label class="layui-form-label">商品名称</label>
+				<div id="" class="layui-input-block">
+					<input type="text" name="name" id="" value="" class="layui-input" lay-verify='required' />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">商品种类</label>
+				<div id="" class="layui-input-block">
+					<input type="text" name="type" id="" value="" class="layui-input" lay-verify='required' />
+				</div>
+			</div>
+			<div class="layui-form-item">
+					<input type="hidden" name="sid" id="" value="{$sid}" class="layui-input" lay-verify='required' />
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">商品价格</label>
+				<div id="" class="layui-input-block">
+					<input type="number" name="price" id="" value="" class="layui-input" lay-verify='required' />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">商品原价</label>
+				<div id="" class="layui-input-block">
+					<input type="number" name="price1" id="" value="" class="layui-input" lay-verify='required' />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">商品描述</label>
+				<div id="" class="layui-input-block">
+					<textarea type="text" name="detail" id="" value="" class="layui-textarea" lay-verify='required'></textarea>
+				</div>
+			</div>
+			<div id="" class="layui-form-item">
+				<div id="upload1" class="layui-input-block">
+					<button type="button" class="layui-btn">上传商品图片</button>
+					<input type="hidden" name="img" id="img" value="" />
+					<div id="img_list" class="layui-upload">
+						
+					</div>
+				</div>
+			</div>
+			<div id="" class="layui-form-item">
+				<div id="" class="layui-input-block">
+					<button lay-submit='' class="layui-btn layui-btn-default" lay-filter='button1'>提交</button>
+				</div>
+
+			</div>
+		</form>
+		<script src="/static/module/layui/layui.js">
+
+		</script>
+		<script type="text/javascript">
+			layui.config({
+				debug:true
+			});
+			layui.use(['form', 'upload', 'layer'], function() {
+				var form = layui.form,
+					upload = layui.upload,
+					layer = layui.layer,
+					$ = layui.jquery,
+					img=[];
+				upload.render({
+					elem: '#upload1',
+					url: '/admin/product/upload',
+					multiple: true,
+					 before: function(obj){
+      //预读本地文件示例，不支持ie8
+      obj.preview(function(index, file, result){
+        $('#img_list').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">')
+      });
+    },
+					done: function(res) {
+						img.push(res.name)
+						var img1=img.join(',');
+						console.log(img1)
+						$('#img').attr('value',img1)
+						
+					}
+				});
+				form.on('submit(button1)', function(data) {
+					$.post('/admin/product/add',data.field,function(){
+						layer.msg('发布成功！');
+						$('#form1')[0].reset();
+						layui.form.render();
+					})
+					return false;
+				});
+			})
+		</script>
+	</body>
+</html>

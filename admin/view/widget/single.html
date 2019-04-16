@@ -1,0 +1,48 @@
+<style type='text/css'> 
+  .layui-upload-img{
+  height:200px;
+    width:200px;
+    border-width:1px
+  }
+</style>
+<div class="layui-upload">
+  <button type="button" class="layui-btn" id="btn1">选择图片</button>
+  <div class="layui-upload-list">
+    <img class="layui-upload-img" id="img1">
+  </div>
+  <button class="layui-btn" id="btn2">确认上传</button>
+</div>  
+
+<script type="text/javascript">
+layui.use(['upload','layer'], function(){
+  var $ = layui.jquery
+  ,upload = layui.upload
+  ,layer=layui.layer;
+  
+  //普通图片上传
+  var uploadInst = upload.render({
+    elem: '#btn1'
+    ,url: '/admin/image/single'
+    ,auto:false
+    ,bindAction:'#btn2'
+    ,choose: function(obj){
+      //预读本地文件示例，不支持ie8
+      obj.preview(function(index, file, result){
+        $('#img1').attr('src', result); //图片链接（base64）
+      });
+    }
+    ,done: function(res){
+      //如果上传失败
+      if(res.code > 0){
+        return layer.msg('上传失败');
+      }else{
+      	return layer.msg('上传成功');
+      }
+      //上传成功
+    }
+    ,error: function(){
+      layer.msg('上传失败');
+    }
+  })
+    })
+</script>

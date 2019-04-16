@@ -1,0 +1,184 @@
+{extend name='public/base'}
+{block name='content'}
+<style type="text/css">
+	.pagination>.active>a,
+	.pagination>.active>a:focus,
+	.pagination>.active>a:hover,
+	.pagination>.active>span,
+	.pagination>.active>span:focus,
+	.pagination>.active>span:hover {
+		background-color: #00a65a
+	}
+</style>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1>
+		商品管理
+		<small>商品列表</small>
+	</h1>
+	<ol class="breadcrumb">
+		<li><a href="#"><i class="fa fa-dashboard"></i> 商品管理</a></li>
+		<li class="active">商品列表</li>
+	</ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+	<table id='table1' class="" lay-filter='table1'></table>
+	<script type="text/html" id="toolbar">
+
+		<a class="layui-btn layui-btn-default layui-btn-xs" lay-event="shangjia">上/下架</a>
+</script>
+</section>
+<!-- /.content -->
+
+{/block}
+{block name='script'}
+<script type="text/javascript">
+	layui.config({
+		debug: true
+	});
+	layui.use(['table', 'layer', 'form'], function(res) {
+		var table = layui.table,
+			layer = layui.layer,
+			form = layui.form,
+			$ = layui.jquery;
+
+		var table1 = table.render({
+			elem: '#table1',
+			// height: 420,
+			url: '/admin/product/show1/',
+			title: '商品列表',
+			page: true,
+			// limit:10,
+			toolbar: 'default',
+			totalRow: true,
+			cols: [
+				[{
+						type: 'checkbox',
+						fixed: 'left'
+					},
+					{
+						field: 'id',
+						title: 'ID',
+						width: 60
+					},
+					{
+						field: 'name',
+						title: '商品名称'
+					},
+					{
+						field: 'price',
+						title: '价格'
+					},
+					{
+						field: 'detail',
+						title: '商品描述'
+					},
+					{
+						field: 'img',
+						title: '商品图片'
+					},
+					{
+						field: 'status',
+						title: '状态'
+					},
+					{
+						field: 'create_time',
+						title: '创建时间'
+					},
+					{
+						toolbar: '#toolbar',
+						align: 'center',
+						width: 165,
+						fixed: 'right'
+					}
+				]
+			],
+			parseData: function(res) {
+				return {
+					'msg': 'success',
+					'code': 0,
+					'data': res.product,
+					'count': res.count
+
+				}
+			}
+		});
+		//监听头工具栏事件
+		table.on('toolbar(table1)', function(obj) {
+			var checkStatus = table.checkStatus(obj.config.id),
+				data = checkStatus.data; //获取选中的数据
+			switch (obj.event) {
+				case 'add':
+					layer.open({
+						type: 2,
+						title: '增加商品',
+						content: '/admin/product/add_show',
+						area: ['80%', '80%'],
+						shade: 0.8,
+						cancel: function() {
+
+							table1.reload();
+						}
+					})
+					break;
+				case 'update':
+					if (data.length === 0) {
+						layer.msg('请选择一行');
+					} else if (data.length > 1) {
+						layer.msg('只能同时编辑一个');
+					} else {
+						layer.open({
+							type: 2,
+							title: '修改商品',
+							content: '/admin/product/edit_show?id=' + JSON.stringify(data[0].id),
+							area: ['80%', '80%'],
+							shade: 0.8,
+							cancel: function() {
+
+								table1.reload();
+							}
+						})
+					}
+					break;
+				case 'delete':
+					if (data.length === 0) {
+						layer.msg('请选择一行');
+					} else {
+						var id = [];
+						for (var i = 0; i < data.length; i++) {
+							id.push(data[i].id);
+							data[i]
+						};
+						console.log(id);
+						$.post('/admin/product/del', {
+							'id': id
+						}, function(res) {
+							layer.msg('删除成功'),
+
+								table1.reload();
+						})
+					}
+					break;
+			};
+		});
+
+		//监听行工具事件
+		table.on('tool(table1)', function(obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+			var data = obj.data ,//获得当前行数据
+				layEvent = obj.event; //获得 lay-event 对应的值
+			if (layEvent === 'shangjia') {
+				
+				$.post('/admin/product/shangjia', {
+					id: data.id
+				}, function() {
+					layer.msg('状态切换成功');
+					table1.reload();
+				})
+			}
+		})
+
+	})
+</script>
+{/block}
